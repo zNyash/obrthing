@@ -1,20 +1,34 @@
 require("dotenv").config();
 
-import {Client, GatewayIntentBits} from "discord.js";
+import {
+	Client,
+	GatewayIntentBits,
+	SlashCommandBuilder,
+	Events,
+	ChatInputCommandInteraction,
+} from "discord.js";
 const client = new Client({
-    intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent],
+	intents: [
+		GatewayIntentBits.Guilds,
+		GatewayIntentBits.GuildMessages,
+		GatewayIntentBits.MessageContent,
+	],
+});
+const botToken = process.env.DISCORD_TOKEN;
+
+client.once(Events.ClientReady, (c) => {
+	console.log(`Logged in as ${client.user?.tag}!`);
+
+	const penis = new SlashCommandBuilder()
+		.setName("penis")
+		.setDescription("sim, penis.");
+
+	client.application?.commands.create(penis);
 });
 
-client.login(process.env.DISCORD_TOKEN);
-
-client.on("messageCreate", (message) => {
-    console.log("mensagem")
-    if (message.author.bot) return;
-    if (message.content == "!penis") {
-        message.channel.send("amo penis");
-    }
+client.on(Events.InteractionCreate, (_interaction) => {
+	const interaction = _interaction as ChatInputCommandInteraction;
+	interaction.reply("penissssss");
 });
 
-client.on("ready", () => {
-    console.log(`Logged in as ${client.user?.tag}!`);
-});
+client.login(botToken);
